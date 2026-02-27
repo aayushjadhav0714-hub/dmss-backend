@@ -16,7 +16,8 @@ connection.connect((err) => {
   }
   console.log("Aiven Database Connected!");
 // setup.js cha table creation wala bhag asava:
-const createReportsTable = `
+// setup.js madhe asha prakare badal kara:
+const createTableQuery = `
 CREATE TABLE IF NOT EXISTS reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
     fullname VARCHAR(255),
@@ -27,6 +28,7 @@ CREATE TABLE IF NOT EXISTS reports (
     description TEXT
 );
 `;
+// yachyakhali db.query asave
 
 // Mag ha code db.query vaprun run kela pahije
 db.query(createReportsTable, (err) => {
