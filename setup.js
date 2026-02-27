@@ -16,19 +16,8 @@ connection.connect((err) => {
   }
   console.log("Aiven Database Connected!");
 // setup.js cha table creation wala bhag asava:
-// setup.js madhe asha prakare badal kara:
-const createTableQuery = `
-CREATE TABLE IF NOT EXISTS reports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fullname VARCHAR(255),
-    mobile VARCHAR(20),
-    disasterType VARCHAR(100),
-    datetime VARCHAR(100),
-    location VARCHAR(255),
-    description TEXT
-);
-`;
-// yachyakhali db.query asave
+const createTableQuery = `CREATE TABLE IF NOT EXISTS reports (id INT AUTO_INCREMENT PRIMARY KEY, fullname VARCHAR(255), mobile VARCHAR(20), disasterType VARCHAR(100), datetime VARCHAR(100), location VARCHAR(255), description TEXT);`;
+db.query(createTableQuery, (err) => { /* logic */ });
 
 // Mag ha code db.query vaprun run kela pahije
 db.query(createReportsTable, (err) => {
