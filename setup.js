@@ -15,7 +15,24 @@ connection.connect((err) => {
     return;
   }
   console.log("Aiven Database Connected!");
+// setup.js cha table creation wala bhag asava:
+const createReportsTable = `
+CREATE TABLE IF NOT EXISTS reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(255),
+    mobile VARCHAR(20),
+    disasterType VARCHAR(100),
+    datetime VARCHAR(100),
+    location VARCHAR(255),
+    description TEXT
+);
+`;
 
+// Mag ha code db.query vaprun run kela pahije
+db.query(createReportsTable, (err) => {
+    if (err) console.log("Error creating table:", err);
+    else console.log("Reports table ready with fullname column!");
+});
   // Query 1: Users Table
   const userTable = `CREATE TABLE IF NOT EXISTS users (
     id INT NOT NULL AUTO_INCREMENT,
