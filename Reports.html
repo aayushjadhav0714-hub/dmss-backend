@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Reports | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <style>
+        :root {
+            --primary: #0b3c5d;
+            --secondary: #1d70a2;
+            --accent: #c0392b;
+            --bg-light: #f4f6f8;
+            --text-dark: #2c3e50;
+            --white: #ffffff;
+            --success: #27ae60;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-text { font-size: 20px; font-weight: 700; }
+
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+
+        .logout-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Layout */
+        .wrapper { display: flex; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: var(--primary);
+            min-height: calc(100vh - 60px);
+            padding: 20px 0;
+            color: white;
+        }
+
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+
+        .sidebar-menu li {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-menu li:hover, .sidebar-menu li.active {
+            background-color: var(--secondary);
+        }
+
+        /* Main Content */
+        .main-content { padding: 30px; width: 100%; }
+
+        .main-content h1 { margin-bottom: 25px; color: var(--primary); font-size: 24px; }
+
+        /* Table Design */
+        .table-container {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary);
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+
+        tr:hover { background-color: #f1f7ff; }
+
+        .view-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .view-btn:hover { background-color: var(--primary); }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #e1f5fe;
+            color: #0288d1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-text">Admin Panel | Emergency Response</div>
+        <div class="header-actions">
+            <i class="fas fa-bell"></i>
+            <button class="logout-btn" onclick="location.href='login.html'">Logout</button>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li onclick="location.href='Dashboard.html'"><i class="fas fa-chart-line"></i> Dashboard</li>
+                <li class="active" onclick="location.href='Reports.html'"><i class="fas fa-file-alt"></i> Registered Reports</li>
+                <li onclick="location.href='Users.html'"><i class="fas fa-users"></i> Users</li>
+                <li onclick="location.href='Logs.html'"><i class="fas fa-history"></i> Logs</li>
+                <li onclick="location.href='Setting.html'"><i class="fas fa-cog"></i> Settings</li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <h1>📋 Disaster Incident Reports</h1>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Mobile</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportsBody">
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:30px; color:gray;">Loading reports...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+function loadReports(){
+  fetch("http://localhost:5000/get-reports")
+  .then(res => res.json())
+  .then(data => {
+
+    const tbody = document.getElementById("reportsBody");
+    tbody.innerHTML = "";
+
+    if(data.length === 0){
+      tbody.innerHTML = "<tr><td colspan='6' style='text-align:center'>No reports found</td></tr>";
+      return;
+    }
+
+    data.forEach(report => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${report.fullname}</td>
+          <td>${report.mobile}</td>
+          <td><span class="badge">${report.disasterType}</span></td>
+          <td>${report.location}</td>
+          <td>${report.datetime}</td>
+          <td><button class="view-btn">View</button></td>
+        </tr>
+      `;
+    });
+
+  });
+}
+// १. आधी असलेले रिपोर्ट्स मिळवा (जर नसतील तर रिकामी लिस्ट घ्या)
+let reportsList = JSON.parse(localStorage.getItem("all_reports")) || [];
+
+// २. नवीन रिपोर्ट तयार करा (हे तुमच्या फॉर्म सबमिशनच्या वेळी होईल)
+let newReport = { id: 1, title: "Flood Alert", area: "Pune" };
+
+// ३. लिस्टमध्ये नवीन रिपोर्ट टाका
+reportsList.push(newReport);
+
+// ४. ही पूर्ण लिस्ट LocalStorage मध्ये 'all_reports' या नावाने सेव्ह करा
+localStorage.setItem("all_reports", JSON.stringify(reportsList));
+loadReports();
+
+</script>
+</body>
+</html>
