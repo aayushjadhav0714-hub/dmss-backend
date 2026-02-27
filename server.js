@@ -62,19 +62,22 @@ app.post("/login", (req, res) => {
    ADD REPORT API
 ========================== */
 app.post("/add-report", (req, res) => {
-  const { fullname, mobile, disasterType, datetime, location, description } = req.body;
+    const { fullname, mobile, disasterType, datetime, location, description } = req.body;
 
-  const reportSql = `
-    INSERT INTO reports 
-    (fullname, mobile, disasterType, datetime, location, description) 
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
+    const reportSql = `
+        INSERT INTO reports 
+        (fullname, mobile, disasterType, datetime, location, description) 
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
 
-  db.query(reportSql, [fullname, mobile, disasterType, datetime, location, description], (err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ success: false });
-    }
+    db.query(reportSql, [fullname, mobile, disasterType, datetime, location, description], (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ success: false });
+        }
+        res.json({ success: true });
+    }); // <--- Ha query cha bracket band kela
+}); // <--- Ha app.post cha bracket band kela
 
     // Insert into users table (ONLY if not exists)
     const checkUserSql = "SELECT * FROM users WHERE mobile = ?";
@@ -89,8 +92,6 @@ app.post("/add-report", (req, res) => {
       }
       res.json({ success: true });
     });
-  });
-});
 
 /* ==========================
    GET DATA APIS
